@@ -1,38 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom';
 
-const content = [
-  {
-    tab: "Section 1",
-    content: "I'm the content of the Section 1"
-  },
-  {
-    tab: "Section 2",
-    content: "I'm the content of the Section 2"
-  }
-];
-
-const useTabs = (initialTab, allTabs) => {
-  const [currentIndex, setCurrentIndex] = useState(initialTab);
-  if(!allTabs || !Array.isArray(allTabs)){
-    return;
-  }
-  return {
-    currentItem: allTabs[currentIndex],
-    changeItem: setCurrentIndex,
+const useBeforeLeave = (onBefore) => {
+  const handle = (event) => {
+    const { clientY } = event;
+    if(clientY <= 0){
+      onBefore();
+    }
   };
+  useEffect(() => {
+    if(typeof onBefore !== "function"){
+      return;
+    }
+    document.addEventListener("mouseleave", handle);
+    return () => document.removeEventListener("mouseleave", handle);
+  }, []);
 };
 
 const App = () => {
-  const {currentItem, changeItem} = useTabs(0, content);
-
+  const begForLife = () => console.log("Pls dont leave");
+  useBeforeLeave(begForLife);
   return (
     <div className="App">
       <h1>Hello</h1>
-      {content.map((section, index) =>(
-        <button onClick={() => changeItem(index)}>{section.tab}</button> 
-      ))}
-      <div>{currentItem.content}</div>
     </div>
   );
 };
