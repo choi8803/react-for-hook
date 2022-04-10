@@ -3,11 +3,22 @@ import ReactDOM from 'react-dom';
 import useAxios from './hook/useAxios';
 
 const App = () => {
-  const {loading, data, error} = useAxios({ url:"http://yts.am/api/v2/list_movies.json"});
-  console.log(`Loading: ${loading}\nError: ${error}\nData:${data}`);
+  const {loading, data, error, refetch} = useAxios({ 
+    url:"https://yts.mx/api/v2/list_movies.json"
+  });
+
+  console.log(`Loading: ${loading}\nError: ${error}\nData:${JSON.stringify(data)}`);
+  
   return (
     <div className="App" >
-      <h1>Hello</h1>
+      {loading ? 
+        <h1>Loading...</h1> : 
+        <div>
+            {data.data.data.movies.map((movie) => 
+                <h2>{movie.title}</h2>
+            )}
+        </div>
+        }
     </div>
   );
 };
